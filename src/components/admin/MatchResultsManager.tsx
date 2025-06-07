@@ -34,7 +34,7 @@ export const MatchResultsManager = () => {
         .from("scheduled_matches")
         .select(`
           *,
-          match_results(id)
+          match_results!match_results_scheduled_match_id_fkey(id)
         `)
         .eq("completed", true) // Filter for completed matches
         .order("match_time_utc", { ascending: false });
