@@ -11,6 +11,7 @@ import PlayerStats from "./pages/PlayerStats";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -25,8 +26,12 @@ const App = () => (
           <Route path="/matches/scheduled" element={<ScheduledMatches />} />
           <Route path="/matches/past" element={<PastMatches />} />
           <Route path="/players/stats" element={<PlayerStats />} />
-          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
