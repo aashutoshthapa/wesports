@@ -13,7 +13,8 @@ export const useScheduledMatches = () => {
         .select(`
           id,
           match_time_utc,
-          opponent_clan_name
+          opponent_clan_name,
+          completed
         `)
         .eq("completed", false)
         .order("match_time_utc", { ascending: true });

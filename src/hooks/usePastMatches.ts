@@ -13,6 +13,7 @@ export const usePastMatches = () => {
           id,
           match_time_utc,
           opponent_clan_name,
+          completed,
           match_results (
             id,
             uwu_stars,

@@ -157,12 +157,14 @@ export type Database = {
       scheduled_matches: {
         Row: {
           created_at: string
+          completed: boolean
           id: string
           match_time_utc: string
           notes: string | null
           opponent_clan_name: string
         }
         Insert: {
+          completed?: boolean
           created_at?: string
           id?: string
           match_time_utc: string
@@ -170,6 +172,7 @@ export type Database = {
           opponent_clan_name: string
         }
         Update: {
+          completed?: boolean
           created_at?: string
           id?: string
           match_time_utc?: string
