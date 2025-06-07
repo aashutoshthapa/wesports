@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -14,16 +13,16 @@ export const usePastMatches = () => {
           match_time_utc,
           opponent_clan_name,
           completed,
-          match_results (
+          match_results!match_results_scheduled_match_id_fkey (
             id,
             uwu_stars,
             enemy_stars,
             uwu_percentage,
             enemy_percentage,
             match_date,
-            player_performances (
+            player_performances!player_performances_match_result_id_fkey (
               *,
-              players (
+              players!player_performances_player_id_fkey (
                 name
               )
             )
