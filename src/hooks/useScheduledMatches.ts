@@ -13,7 +13,7 @@ export const useScheduledMatches = () => {
         .from("scheduled_matches")
         .select(`
           *,
-          match_results(id)
+          match_results(id, scheduled_match_id)
         `)
         .order("match_time_utc", { ascending: true });
 

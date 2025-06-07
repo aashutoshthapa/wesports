@@ -23,7 +23,7 @@ export const usePastMatches = () => {
           )
         `)
         .order("match_date", { ascending: false })
-        .eq("scheduled_match_id", "not null");
+        .is("scheduled_match_id", true);
 
       if (matchError) {
         console.error("Error fetching past matches:", matchError);
