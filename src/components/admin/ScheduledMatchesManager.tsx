@@ -32,7 +32,7 @@ export const ScheduledMatchesManager = () => {
         .from("scheduled_matches")
         .select(`
           *,
-          match_results(id)
+          match_results!match_results_scheduled_match_id_fkey(id)
         `)
         .order("match_time_utc", { ascending: true });
 
