@@ -46,6 +46,7 @@ export const ScheduledMatchesManager = () => {
       if (error) throw error;
       return data;
     },
+    staleTime: 0,
   });
 
   const createMatchMutation = useMutation({
