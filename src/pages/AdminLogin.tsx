@@ -6,20 +6,39 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { Lock, User } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const AdminLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock login - will be replaced with Supabase authentication
-    if (username === "admin" && password === "admin") {
+    try {
+      // First get the user record
+      const { data: user, error: getUserError } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('username', username)
+        .single();
+
+      if (getUserError) throw getUserError;
+      if (!user) throw new Error('User not found');
+
+      // Verify the password hash
+      const isPasswordValid = await supabase.auth.admin.verifyPasswordHash(
+        password,
+        user.password_hash
+      );
+
+      if (!isPasswordValid) throw new Error('Invalid password');
+
+      // If everything is valid, set admin flag and navigate
       localStorage.setItem("isAdmin", "true");
       navigate("/admin");
-    } else {
-      alert("Invalid credentials");
+    } catch (err) {
+      alert((err instanceof Error) ? err.message : 'Invalid credentials');
     }
   };
 
@@ -86,7 +105,7 @@ const AdminLogin = () => {
 
             <div className="mt-4 p-3 bg-blue-900/20 rounded-lg border border-blue-500/20">
               <p className="text-blue-300 text-sm text-center">
-                Demo credentials: admin / admin
+                Admin credentials: merc / mercbad
               </p>
             </div>
           </CardContent>
