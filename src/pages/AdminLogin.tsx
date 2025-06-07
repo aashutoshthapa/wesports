@@ -99,12 +99,6 @@ const AdminLogin = () => {
                 ← Back to Home
               </Link>
             </div>
-
-            <div className="mt-4 p-3 bg-blue-900/20 rounded-lg border border-blue-500/20">
-              <p className="text-blue-300 text-sm text-center">
-                Admin credentials: merc / mercbad
-              </p>
-            </div>
           </CardContent>
         </Card>
       </div>
