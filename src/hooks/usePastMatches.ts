@@ -13,7 +13,7 @@ export const usePastMatches = () => {
           match_time_utc,
           opponent_clan_name,
           completed,
-          match_results!match_results_scheduled_match_id_fkey (
+          match_results!match_results_scheduled_match_id_fkey!inner (
             id,
             uwu_stars,
             enemy_stars,
