@@ -8,7 +8,6 @@ export const useScheduledMatches = () => {
     queryFn: async () => {
       console.log("Fetching scheduled matches...");
       
-      // Get all scheduled matches that don't have match results
       const { data: scheduledMatches, error: scheduledError } = await supabase
         .from("scheduled_matches")
         .select(`
@@ -16,6 +15,7 @@ export const useScheduledMatches = () => {
           match_time_utc,
           opponent_clan_name
         `)
+        .eq("completed", false)
         .order("match_time_utc", { ascending: true });
 
       if (scheduledError) {
@@ -23,20 +23,8 @@ export const useScheduledMatches = () => {
         throw scheduledError;
       }
 
-      // Filter out matches that have results by checking if they exist in match_results table
-      const { data: matchResults } = await supabase
-        .from("match_results")
-        .select("scheduled_match_id")
-        .in("scheduled_match_id", scheduledMatches?.map(match => match.id) || []);
-
-      const matchIdsWithResults = matchResults?.map(result => result.scheduled_match_id) || [];
-      
-      const upcomingMatches = scheduledMatches?.filter(match => 
-        !matchIdsWithResults.includes(match.id)
-      ) || [];
-
-      console.log("Upcoming matches:", upcomingMatches);
-      return upcomingMatches;
+      console.log("Upcoming matches:", scheduledMatches);
+      return scheduledMatches;
     },
   });
 };
