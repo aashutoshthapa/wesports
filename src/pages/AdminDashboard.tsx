@@ -28,12 +28,22 @@ const AdminDashboard = () => {
                 UwU eSports
               </span>
             </Link>
-            <div className="hidden md:flex space-x-6">
-              <Link to="/" className="text-gray-300 hover:text-purple-400 transition-colors">Home</Link>
-              <Link to="/matches/scheduled" className="text-gray-300 hover:text-purple-400 transition-colors">Scheduled</Link>
-              <Link to="/matches/past" className="text-gray-300 hover:text-purple-400 transition-colors">Past Matches</Link>
-              <Link to="/players/stats" className="text-gray-300 hover:text-purple-400 transition-colors">Player Stats</Link>
-              <Link to="/admin" className="text-purple-400">Admin</Link>
+            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6">
+              <Link to="/" className="text-gray-300 hover:text-purple-400 transition-colors px-3 py-2 rounded-md md:px-4">
+                Home
+              </Link>
+              <Link to="/matches/scheduled" className="text-gray-300 hover:text-purple-400 transition-colors px-3 py-2 rounded-md md:px-4">
+                Scheduled
+              </Link>
+              <Link to="/matches/past" className="text-gray-300 hover:text-purple-400 transition-colors px-3 py-2 rounded-md md:px-4">
+                Past Matches
+              </Link>
+              <Link to="/players/stats" className="text-gray-300 hover:text-purple-400 transition-colors px-3 py-2 rounded-md md:px-4">
+                Player Stats
+              </Link>
+              <Link to="/admin" className="text-purple-400 px-3 py-2 rounded-md md:px-4">
+                Admin
+              </Link>
             </div>
           </div>
         </div>
