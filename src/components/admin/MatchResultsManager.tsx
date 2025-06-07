@@ -26,7 +26,7 @@ export const MatchResultsManager = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Only fetch scheduled matches that don't have results yet
+  // Only fetch scheduled matches that don't have results yet and are completed
   const { data: scheduledMatches } = useQuery({
     queryKey: ["scheduled-matches-for-results"],
     queryFn: async () => {
@@ -36,6 +36,7 @@ export const MatchResultsManager = () => {
           *,
           match_results(id)
         `)
+        .eq("completed", true) // Filter for completed matches
         .order("match_time_utc", { ascending: false });
       
       if (error) throw error;
