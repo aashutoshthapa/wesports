@@ -1,4 +1,3 @@
-
 import { Trophy, Target, Calendar, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -73,11 +72,11 @@ const PastMatches = () => {
                       <div className="flex items-center space-x-4 text-gray-400">
                         <div className="flex items-center space-x-1">
                           <Calendar className="h-4 w-4" />
-                          <span>{new Date(match.match_date).toLocaleDateString()}</span>
+                          <span>{new Date(match.match_results.match_date).toLocaleDateString()}</span>
                         </div>
                       </div>
                     </div>
-                    {getResultBadge(match.uwu_stars, match.enemy_stars)}
+                    {getResultBadge(match.match_results.uwu_stars, match.match_results.enemy_stars)}
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -88,11 +87,11 @@ const PastMatches = () => {
                       <div className="space-y-2">
                         <div className="flex justify-between">
                           <span className="text-gray-300">Stars</span>
-                          <span className="text-white font-bold">{match.uwu_stars}</span>
+                          <span className="text-white font-bold">{match.match_results.uwu_stars}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-300">Destruction</span>
-                          <span className="text-white font-bold">{match.uwu_percentage}%</span>
+                          <span className="text-white font-bold">{match.match_results.uwu_percentage}%</span>
                         </div>
                       </div>
                     </div>
@@ -103,11 +102,11 @@ const PastMatches = () => {
                       <div className="space-y-2">
                         <div className="flex justify-between">
                           <span className="text-gray-300">Stars</span>
-                          <span className="text-white font-bold">{match.enemy_stars}</span>
+                          <span className="text-white font-bold">{match.match_results.enemy_stars}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-300">Destruction</span>
-                          <span className="text-white font-bold">{match.enemy_percentage}%</span>
+                          <span className="text-white font-bold">{match.match_results.enemy_percentage}%</span>
                         </div>
                       </div>
                     </div>
@@ -125,7 +124,7 @@ const PastMatches = () => {
                   {selectedMatch === match.id && (
                     <div className="mt-6 space-y-3">
                       <h4 className="text-white font-semibold mb-3">Player Performance</h4>
-                      {match.player_performances?.map((performance, index) => (
+                      {match.match_results.player_performances?.map((performance, index) => (
                         <div key={index} className="bg-black/30 rounded-lg p-4 flex justify-between items-center">
                           <span className="text-white font-medium">{performance.players?.name}</span>
                           <div className="flex items-center space-x-4">
