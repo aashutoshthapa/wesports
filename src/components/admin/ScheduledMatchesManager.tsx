@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 export const ScheduledMatchesManager = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingMatch, setEditingMatch] = useState<any>(null);
+  const [statusFilter, setStatusFilter] = useState<"all" | "scheduled" | "completed">("all");
   const [formData, setFormData] = useState({
     opponent_clan_name: "",
     match_time_utc: "",
@@ -25,17 +26,23 @@ export const ScheduledMatchesManager = () => {
   const queryClient = useQueryClient();
 
   const { data: matches, isLoading } = useQuery({
-    queryKey: ["admin-scheduled-matches"],
+    queryKey: ["admin-scheduled-matches", statusFilter],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("scheduled_matches")
         .select(`
           *,
           match_results(id)
         `)
-        .eq("completed", false)
         .order("match_time_utc", { ascending: true });
+
+      if (statusFilter === "scheduled") {
+        query = query.eq("completed", false);
+      } else if (statusFilter === "completed") {
+        query = query.eq("completed", true);
+      }
       
+      const { data, error } = await query;
       if (error) throw error;
       return data;
     },
@@ -45,7 +52,7 @@ export const ScheduledMatchesManager = () => {
     mutationFn: async (matchData: typeof formData) => {
       const { data, error } = await supabase
         .from("scheduled_matches")
-        .insert([matchData])
+        .insert([{ ...matchData, completed: false }]) // Newly scheduled matches are not completed
         .select()
         .single();
       
@@ -129,57 +136,69 @@ export const ScheduledMatchesManager = () => {
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle className="text-white">Manage Scheduled Matches</CardTitle>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-purple-600 hover:bg-purple-700">
-                <Plus className="h-4 w-4 mr-2" />
-                Schedule Match
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="bg-slate-800 border-purple-500/20">
-              <DialogHeader>
-                <DialogTitle className="text-white">
-                  {editingMatch ? "Edit Scheduled Match" : "Schedule New Match"}
-                </DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <Label htmlFor="opponent_clan_name" className="text-white">Opponent Clan Name</Label>
-                  <Input
-                    id="opponent_clan_name"
-                    value={formData.opponent_clan_name}
-                    onChange={(e) => setFormData({ ...formData, opponent_clan_name: e.target.value })}
-                    required
-                    className="bg-slate-700 border-purple-500/20 text-white"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="match_time_utc" className="text-white">Match Time (UTC)</Label>
-                  <Input
-                    id="match_time_utc"
-                    type="datetime-local"
-                    value={formData.match_time_utc}
-                    onChange={(e) => setFormData({ ...formData, match_time_utc: e.target.value })}
-                    required
-                    className="bg-slate-700 border-purple-500/20 text-white"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="notes" className="text-white">Notes (Optional)</Label>
-                  <Textarea
-                    id="notes"
-                    value={formData.notes}
-                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    className="bg-slate-700 border-purple-500/20 text-white"
-                    placeholder="Strategy notes, preparation tips, etc."
-                  />
-                </div>
-                <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700">
-                  {editingMatch ? "Update Match" : "Schedule Match"}
+          <div className="flex items-center space-x-4">
+            <Select value={statusFilter} onValueChange={(value: "all" | "scheduled" | "completed") => setStatusFilter(value)}>
+              <SelectTrigger className="w-[180px] bg-slate-700 border-purple-500/20 text-white">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Matches</SelectItem>
+                <SelectItem value="scheduled">Scheduled Only</SelectItem>
+                <SelectItem value="completed">Completed Only</SelectItem>
+              </SelectContent>
+            </Select>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-purple-600 hover:bg-purple-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Schedule Match
                 </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
+              </DialogTrigger>
+              <DialogContent className="bg-slate-800 border-purple-500/20">
+                <DialogHeader>
+                  <DialogTitle className="text-white">
+                    {editingMatch ? "Edit Scheduled Match" : "Schedule New Match"}
+                  </DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <Label htmlFor="opponent_clan_name" className="text-white">Opponent Clan Name</Label>
+                    <Input
+                      id="opponent_clan_name"
+                      value={formData.opponent_clan_name}
+                      onChange={(e) => setFormData({ ...formData, opponent_clan_name: e.target.value })}
+                      required
+                      className="bg-slate-700 border-purple-500/20 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="match_time_utc" className="text-white">Match Time (UTC)</Label>
+                    <Input
+                      id="match_time_utc"
+                      type="datetime-local"
+                      value={formData.match_time_utc}
+                      onChange={(e) => setFormData({ ...formData, match_time_utc: e.target.value })}
+                      required
+                      className="bg-slate-700 border-purple-500/20 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="notes" className="text-white">Notes (Optional)</Label>
+                    <Textarea
+                      id="notes"
+                      value={formData.notes}
+                      onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                      className="bg-slate-700 border-purple-500/20 text-white"
+                      placeholder="Strategy notes, preparation tips, etc."
+                    />
+                  </div>
+                  <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700">
+                    {editingMatch ? "Update Match" : "Schedule Match"}
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -196,6 +215,7 @@ export const ScheduledMatchesManager = () => {
           <TableBody>
             {matches?.map((match) => {
               const hasResult = match.match_results && match.match_results.length > 0;
+              const isCompleted = match.completed; // Use the completed column
               return (
                 <TableRow key={match.id}>
                   <TableCell className="text-white">{match.opponent_clan_name}</TableCell>
@@ -203,7 +223,7 @@ export const ScheduledMatchesManager = () => {
                     {new Date(match.match_time_utc).toLocaleString()}
                   </TableCell>
                   <TableCell>
-                    {hasResult ? (
+                    {isCompleted ? (
                       <Badge className="bg-green-600 text-white">Completed</Badge>
                     ) : (
                       <Badge className="bg-yellow-600 text-white">Scheduled</Badge>
@@ -216,7 +236,7 @@ export const ScheduledMatchesManager = () => {
                         size="sm"
                         variant="outline"
                         onClick={() => handleEdit(match)}
-                        disabled={hasResult}
+                        disabled={isCompleted} // Disable edit/delete for completed matches
                         className="border-purple-500/20 text-purple-400 disabled:opacity-50"
                       >
                         <Edit className="h-4 w-4" />
@@ -225,7 +245,7 @@ export const ScheduledMatchesManager = () => {
                         size="sm"
                         variant="outline"
                         onClick={() => handleDelete(match.id)}
-                        disabled={hasResult}
+                        disabled={isCompleted} // Disable edit/delete for completed matches
                         className="border-red-500/20 text-red-400 disabled:opacity-50"
                       >
                         <Trash2 className="h-4 w-4" />
