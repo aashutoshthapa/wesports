@@ -107,6 +107,29 @@ export const ScheduledMatchesManager = () => {
     },
   });
 
+  const markCompletedMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { data, error } = await supabase
+        .from("scheduled_matches")
+        .update({ completed: true })
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-scheduled-matches"] });
+      queryClient.invalidateQueries({ queryKey: ["scheduled-matches"] }); // Invalidate scheduled matches on public page too
+      queryClient.invalidateQueries({ queryKey: ["past-matches"] }); // Invalidate past matches to update that view
+      toast({ title: "Match marked as completed!" });
+    },
+    onError: (error) => {
+      toast({ title: "Failed to mark match as completed.", description: error.message, variant: "destructive" });
+    }
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingMatch) {
@@ -129,6 +152,12 @@ export const ScheduledMatchesManager = () => {
   const handleDelete = (id: string) => {
     if (confirm("Are you sure you want to delete this scheduled match?")) {
       deleteMatchMutation.mutate(id);
+    }
+  };
+
+  const handleMarkCompleted = (id: string) => {
+    if (confirm("Are you sure you want to mark this match as completed?")) {
+      markCompletedMutation.mutate(id);
     }
   };
 
@@ -233,6 +262,16 @@ export const ScheduledMatchesManager = () => {
                   <TableCell className="text-gray-300">{match.notes || "No notes"}</TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
+                      {!isCompleted && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleMarkCompleted(match.id)}
+                          className="border-green-500/20 text-green-400"
+                        >
+                          Mark Completed
+                        </Button>
+                      )}
                       <Button
                         size="sm"
                         variant="outline"
