@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, Edit, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -32,6 +33,7 @@ export const ScheduledMatchesManager = () => {
           *,
           match_results(id)
         `)
+        .eq("completed", false)
         .order("match_time_utc", { ascending: true });
       
       if (error) throw error;
