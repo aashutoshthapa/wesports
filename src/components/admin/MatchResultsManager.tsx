@@ -215,6 +215,7 @@ export const MatchResultsManager = () => {
                         <SelectValue placeholder="Select available scheduled match" />
                       </SelectTrigger>
                       <SelectContent>
+                        {console.log('Scheduled Matches for dropdown:', scheduledMatches)}
                         {scheduledMatches?.map((match) => (
                           <SelectItem key={match.id} value={match.id}>
                             {match.opponent_clan_name} - {new Date(match.match_time_utc).toLocaleDateString()}
