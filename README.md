@@ -1,16 +1,15 @@
-# Welcome to your Lovable project
+# UwU eSports
 
-## Project info
+A web application to track your clan's matches and player statistics.
 
-**URL**: https://lovable.dev/projects/3a2bfdad-e2e2-416f-9e2c-25c8d102d0a1
+## Features
 
-## How can I edit this code?
+- Track scheduled matches
+- Record match results
+- View player statistics
+- Admin dashboard for managing matches and results
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-## Local Development
+## Development
 
 1. Install dependencies:
 ```bash
@@ -22,26 +21,20 @@ npm install
 npm run dev
 ```
 
-3. Open [http://localhost:8080](http://localhost:8080) to view it in your browser.
+3. Build for production:
+```bash
+npm run build
+```
 
-## Tech Stack
+## Deployment
 
-This project is built with:
+The application is configured to deploy automatically to Netlify when changes are pushed to the main branch.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Custom Domain
 
-## How can I deploy this project?
+To set up a custom domain:
 
-Simply open [Lovable](https://lovable.dev/projects/3a2bfdad-e2e2-416f-9e2c-25c8d102d0a1) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+1. Purchase a domain from your preferred domain registrar
+2. Add the domain in your Netlify dashboard
+3. Follow Netlify's DNS configuration instructions
+4. Wait for DNS propagation (can take up to 48 hours)
