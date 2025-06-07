@@ -1,4 +1,3 @@
-
 import { Trophy, Target, Star, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,10 +17,10 @@ const PlayerStats = () => {
   const { data: playerStats, isLoading, error } = usePlayerStats();
 
   const getStarRating = (avgStars: number) => {
-    if (avgStars >= 2.8) return { color: "text-green-400", rating: "Excellent" };
-    if (avgStars >= 2.5) return { color: "text-yellow-400", rating: "Good" };
-    if (avgStars >= 2.0) return { color: "text-orange-400", rating: "Average" };
-    return { color: "text-red-400", rating: "Needs Improvement" };
+    if (avgStars >= 2.8) return { color: "text-green-400" };
+    if (avgStars >= 2.5) return { color: "text-yellow-400" };
+    if (avgStars >= 2.0) return { color: "text-orange-400" };
+    return { color: "text-red-400" };
   };
 
   const getMonthStats = (player: any, year: number, month: number) => {
@@ -71,7 +70,7 @@ const PlayerStats = () => {
 
   const PlayerStatsCard = ({ player, period, customStats }: { player: any, period: 'monthly' | 'overall' | 'custom', customStats?: any }) => {
     const stats = customStats || player[period];
-    const { color, rating } = getStarRating(stats.avg_stars);
+    const { color } = getStarRating(stats.avg_stars);
     
     return (
       <Card 
@@ -84,9 +83,6 @@ const PlayerStats = () => {
               <CardTitle className="text-white text-lg">{player.name}</CardTitle>
               <p className="text-gray-400 text-sm">{player.player_tag}</p>
             </div>
-            <Badge className={`${color}`}>
-              {rating}
-            </Badge>
           </div>
         </CardHeader>
         <CardContent>
