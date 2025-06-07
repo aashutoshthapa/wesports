@@ -26,13 +26,10 @@ const AdminLogin = () => {
       if (getUserError) throw getUserError;
       if (!user) throw new Error('User not found');
 
-      // Verify the password hash
-      const isPasswordValid = await supabase.auth.admin.verifyPasswordHash(
-        password,
-        user.password_hash
-      );
-
-      if (!isPasswordValid) throw new Error('Invalid password');
+      // Verify the password (currently stored as plain text)
+      if (user.password_hash !== password) {
+        throw new Error('Invalid password');
+      }
 
       // If everything is valid, set admin flag and navigate
       localStorage.setItem("isAdmin", "true");
