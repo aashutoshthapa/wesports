@@ -2,14 +2,21 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Link } from "react-router-dom";
-import { Shield, Users, Calendar, Trophy, Plus } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Shield, Users, Calendar, Trophy, Plus, LogOut } from "lucide-react";
 import { PlayersManager } from "@/components/admin/PlayersManager";
 import { ScheduledMatchesManager } from "@/components/admin/ScheduledMatchesManager";
 import { MatchResultsManager } from "@/components/admin/MatchResultsManager";
 import { PlayerPerformancesManager } from "@/components/admin/PlayerPerformancesManager";
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('isAdmin');
+    navigate('/admin/login');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Navigation */}
@@ -34,9 +41,18 @@ const AdminDashboard = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8">
-          <div className="flex items-center space-x-3 mb-4">
-            <Shield className="h-8 w-8 text-purple-400" />
-            <h1 className="text-4xl font-bold text-white">Admin Dashboard</h1>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <Shield className="h-8 w-8 text-purple-400" />
+              <h1 className="text-4xl font-bold text-white">Admin Dashboard</h1>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-2 text-gray-400 hover:text-purple-400 transition-colors"
+            >
+              <LogOut className="h-5 w-5" />
+              <span>Logout</span>
+            </button>
           </div>
           <p className="text-gray-400">Manage your clan's data, matches, and player statistics</p>
         </div>
