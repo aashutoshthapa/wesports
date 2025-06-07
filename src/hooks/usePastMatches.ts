@@ -10,20 +10,22 @@ export const usePastMatches = () => {
       const { data: matchResults, error: matchError } = await supabase
         .from("match_results")
         .select(`
-          *,
+          id,
+          uwu_stars,
+          enemy_stars,
+          uwu_percentage,
+          enemy_percentage,
+          match_date,
+          opponent_clan_name,
+          match_time_utc,
           player_performances (
             *,
             players (
               name
             )
-          ),
-          scheduled_matches (
-            opponent_clan_name,
-            match_time_utc
           )
         `)
-        .order("match_date", { ascending: false })
-        .is("scheduled_match_id", true);
+        .order("match_date", { ascending: false });
 
       if (matchError) {
         console.error("Error fetching past matches:", matchError);
